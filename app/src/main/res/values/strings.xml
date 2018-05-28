@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Soul face</string>
+    <string name="app_logo_description">app logo</string>
+
+    <string name="app_ad_id"></string>
+    <string name="banner_ad_id"></string>
+    <string name="interstitial_ad_id"></string>
+</resources>

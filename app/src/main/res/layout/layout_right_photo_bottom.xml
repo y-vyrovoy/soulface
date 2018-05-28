@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_right_photo"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/photo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:onClick="onImageClick"/>
+
+    <LinearLayout
+        android:id="@+id/layout_buttons_right"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_alignParentEnd="true"
+        android:gravity="end|bottom"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="24dp"
+        android:layout_above="@id/photo">
+
+        <ImageButton
+            android:id="@+id/image_btn_vr_mode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_vr_mode"
+            android:layout_marginBottom="24dp"
+            android:background="@android:color/transparent"
+            android:onClick="onBtnVrMode"/>
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_btn_single_mode"
+            android:background="@android:color/transparent"
+            android:onClick="onBtnSingleMode"/>
+
+    </LinearLayout>
+
+</RelativeLayout>
