@@ -57,7 +57,7 @@ public class SingleResultActivity extends BasicBanneredActivity {
         DebugLogger.d(null);
 
         mProgressBar.setVisibility(View.VISIBLE);
-        Bitmap bmpVrModeImage = SoulFaceApp.getVrModeBitmap(false);
+        Bitmap bmpVrModeImage = SoulFaceApp.getSingleResultBitmap();
         BitmapUtils.shareImage(bmpVrModeImage,
                 this,
                 ()-> {

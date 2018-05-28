@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
@@ -18,6 +19,9 @@ import com.meoa.soulface.DebugLogger;
 import com.meoa.soulface.FullScreenAd;
 import com.meoa.soulface.SoulFaceApp;
 import com.meoa.soulface.R;
+
+import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ResultActivity extends BasicBanneredActivity {
     private static final String TAG = ResultActivity.class.getSimpleName();
@@ -37,6 +41,12 @@ public class ResultActivity extends BasicBanneredActivity {
     private int mScreenWidth;
     private boolean mLeftOnTop;
 
+    private LinearLayout mLayoutButtons0;
+    private LinearLayout mLayoutButtons1;
+
+    private AtomicBoolean mRunAnimation = new AtomicBoolean();
+    boolean mOneOrTwo;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         DebugLogger.d(null);
@@ -53,16 +63,16 @@ public class ResultActivity extends BasicBanneredActivity {
         LayoutInflater layoutInflater = LayoutInflater.from(this);
 
         mLeftViewTop = layoutInflater.inflate(R.layout.layout_left_photo_top, null);
-        setSizedDrawable (mLeftViewTop, BitmapUtils.getRoundedCornerBitmap( SoulFaceApp.getBitmapLeft(), ROUND_RADIUS, true, this ));
+        setSizedDrawable (mLeftViewTop, BitmapUtils.getRoundedCornerBitmap( SoulFaceApp.getBitmapLeft(), ROUND_RADIUS, true, true, this ));
 
         mLeftViewBottom = layoutInflater.inflate(R.layout.layout_left_photo_bottom, null);
-        setSizedDrawable (mLeftViewBottom, BitmapUtils.getRoundedCornerBitmap( SoulFaceApp.getBitmapLeft(), ROUND_RADIUS, true, this ));
+        setSizedDrawable (mLeftViewBottom, BitmapUtils.getRoundedCornerBitmap( SoulFaceApp.getBitmapLeft(), ROUND_RADIUS, true, false, this ));
 
         mRightViewTop = layoutInflater.inflate(R.layout.layout_right_photo_top, null);
-        setSizedDrawable (mRightViewTop, BitmapUtils.getRoundedCornerBitmap( SoulFaceApp.getBitmapRight(), ROUND_RADIUS, true, this ));
+        setSizedDrawable (mRightViewTop, BitmapUtils.getRoundedCornerBitmap( SoulFaceApp.getBitmapRight(), ROUND_RADIUS, true, true, this ));
 
         mRightViewBottom = layoutInflater.inflate(R.layout.layout_right_photo_bottom, null);
-        setSizedDrawable (mRightViewBottom, BitmapUtils.getRoundedCornerBitmap( SoulFaceApp.getBitmapRight(), ROUND_RADIUS, true, this ));
+        setSizedDrawable (mRightViewBottom, BitmapUtils.getRoundedCornerBitmap( SoulFaceApp.getBitmapRight(), ROUND_RADIUS, true, false, this ));
 
         mProgressBar = findViewById(R.id.progressBar);
         mImageSaved = findViewById(R.id.image_saved);
@@ -70,6 +80,7 @@ public class ResultActivity extends BasicBanneredActivity {
         mFullScreenAd = SoulFaceApp.getInstance().getPreloadedAd();
     }
 
+    @Override
     public void onStart() {
         DebugLogger.d(null);
 
@@ -78,6 +89,14 @@ public class ResultActivity extends BasicBanneredActivity {
         doLayout(true);
         mProgressBar.setVisibility(View.INVISIBLE);
         mImageSaved.setVisibility(View.INVISIBLE);
+
+        animateIcon();
+    }
+
+    @Override
+    public void onPause() {
+        mRunAnimation.set(false);
+        super.onPause();
     }
 
     private void doLayout(boolean leftOnTop){
@@ -98,10 +117,19 @@ public class ResultActivity extends BasicBanneredActivity {
         if (leftOnTop) {
             layoutRoot.addView(mRightViewBottom);
             layoutRoot.addView(mLeftViewTop);
+
+            mLayoutButtons0 = mRightViewBottom.findViewById(R.id.layout_buttons_right_0);
+            mLayoutButtons1 = mRightViewBottom.findViewById(R.id.layout_buttons_right_1);
         } else {
             layoutRoot.addView(mLeftViewBottom);
             layoutRoot.addView(mRightViewTop);
+
+            mLayoutButtons0 = mRightViewTop.findViewById(R.id.layout_buttons_right_0);
+            mLayoutButtons1 = mRightViewTop.findViewById(R.id.layout_buttons_right_1);
         }
+
+        mLayoutButtons0.setVisibility(View.VISIBLE);
+        mLayoutButtons1.setVisibility(View.INVISIBLE);
     }
 
     private void setSizedDrawable(View view, Bitmap bitmapSrc) {
@@ -199,6 +227,36 @@ public class ResultActivity extends BasicBanneredActivity {
             doLayout(true);
         } else if (v == mRightViewBottom.findViewById(R.id.photo)) {
             doLayout(false);
+        }
+    }
+
+    private void animateIcon() {
+        DebugLogger.d(null);
+
+        mRunAnimation.set(true);
+
+        Runnable task = () -> animationTask();
+        Thread thread = new Thread(task);
+        thread.start();
+    }
+
+    private void animationTask() {
+        DebugLogger.d(null);
+
+        mOneOrTwo = true;
+
+        while (mRunAnimation.get()) {
+
+            runOnUiThread(() -> {
+                mLayoutButtons0.setVisibility(mOneOrTwo ? View.VISIBLE : View.INVISIBLE);
+                mLayoutButtons1.setVisibility(mOneOrTwo ? View.INVISIBLE : View.VISIBLE);
+            });
+
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException ex) {}
+
+            mOneOrTwo = !mOneOrTwo;
         }
     }
 

@@ -224,10 +224,10 @@ public class BitmapUtils {
     }
 
     public static Bitmap getRoundedCornerBitmap(Bitmap bitmap, int radius) {
-        return getRoundedCornerBitmap(bitmap, radius, false, null);
+        return getRoundedCornerBitmap(bitmap, radius, false, true, null);
     }
 
-    public static Bitmap getRoundedCornerBitmap(Bitmap bitmap, int radius, boolean bDrawFrame, Context context) {
+    public static Bitmap getRoundedCornerBitmap(Bitmap bitmap, int radius, boolean bDrawFrame, boolean bActive, Context context) {
         DebugLogger.d(null);
 
         Bitmap imageRounded = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), bitmap.getConfig());
@@ -243,7 +243,13 @@ public class BitmapUtils {
             paintFrame.setAntiAlias(true);
             paintFrame.setStyle(Paint.Style.STROKE);
             paintFrame.setStrokeWidth(5);
-            paintFrame.setColor(context.getResources().getColor(R.color.colorPink));
+            if (bActive) {
+                paintFrame.setColor(context.getResources().getColor(R.color.colorPink));
+            }
+            else {
+                paintFrame.setColor(context.getResources().getColor(android.R.color.white));
+            }
+
             canvas.drawRoundRect((new RectF(0, 0, bitmap.getWidth(), bitmap.getHeight())), radius, radius, paintFrame);
         }
 

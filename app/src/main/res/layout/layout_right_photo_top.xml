@@ -50,7 +50,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/layout_buttons_right"
+        android:id="@+id/layout_buttons_right_0"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -61,18 +61,48 @@
         android:layout_above="@id/photo">
 
         <ImageButton
-            android:id="@+id/image_btn_vr_mode"
+            android:id="@+id/image_btn_vr_mode_0"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_vr_mode"
+            android:src="@drawable/btn_vr_00"
             android:layout_marginBottom="24dp"
             android:background="@android:color/transparent"
             android:onClick="onBtnVrMode"/>
 
         <ImageButton
+            android:id="@+id/image_btn_sf_mode_0"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_btn_single_mode"
+            android:src="@drawable/btn_sf_01"
+            android:background="@android:color/transparent"
+            android:onClick="onBtnSingleMode"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_buttons_right_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_alignParentEnd="true"
+        android:gravity="end|bottom"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="24dp"
+        android:layout_above="@id/photo">
+
+        <ImageButton
+            android:id="@+id/image_btn_vr_mode_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/btn_vr_01"
+            android:layout_marginBottom="24dp"
+            android:background="@android:color/transparent"
+            android:onClick="onBtnVrMode"/>
+
+        <ImageButton
+            android:id="@+id/image_btn_sf_mode_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/btn_sf_00"
             android:background="@android:color/transparent"
             android:onClick="onBtnSingleMode"/>
     </LinearLayout>

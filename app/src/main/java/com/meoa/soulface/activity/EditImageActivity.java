@@ -16,13 +16,16 @@ import com.meoa.soulface.R;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class EditImageActivity extends BasicBanneredActivity {
 
     private ScalableImageView mImageMain = null;
     private ImageView mHandImageView0;
     private ImageView mHandImageView1;
-    private boolean mAnimateIcon;
+
+    List<Integer> mAnimationFramesList = new ArrayList<>();
+    private AtomicBoolean mRunAnimation = new AtomicBoolean();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,8 +38,7 @@ public class EditImageActivity extends BasicBanneredActivity {
         mHandImageView1 = findViewById(R.id.image_hand_1);
 
         InitializeBanner();
-
-        mAnimateIcon = true;
+        initAnimationList();
     }
 
     @Override
@@ -48,7 +50,15 @@ public class EditImageActivity extends BasicBanneredActivity {
         if (SoulFaceApp.getBitmapToEdit() != null) {
             mImageMain.setImageBitmap(SoulFaceApp.getBitmapToEdit());
         }
+
         animateIcon();
+    }
+
+    @Override
+    public void onPause () {
+
+        mRunAnimation.set(false);
+        super.onPause();
     }
 
     public void onBtnBack(View v) {
@@ -67,45 +77,47 @@ public class EditImageActivity extends BasicBanneredActivity {
         startActivity(new Intent(this, ResultActivity.class));
     }
 
+    private void initAnimationList() {
+        DebugLogger.d(null);
+
+        mAnimationFramesList.add(R.drawable.ic_hand_00);
+        mAnimationFramesList.add(R.drawable.ic_hand_01);
+        mAnimationFramesList.add(R.drawable.ic_hand_02);
+        mAnimationFramesList.add(R.drawable.ic_hand_03);
+        mAnimationFramesList.add(R.drawable.ic_hand_04);
+        mAnimationFramesList.add(R.drawable.ic_hand_05);
+        mAnimationFramesList.add(R.drawable.ic_hand_06);
+        mAnimationFramesList.add(R.drawable.ic_hand_07);
+    }
+
     private void animateIcon() {
         DebugLogger.d(null);
 
-        if (mAnimateIcon == true) {
-            mAnimateIcon = false;
+        mRunAnimation.set(true);
 
-            List<Integer> lstFrames = new ArrayList<>();
-            lstFrames.add(R.drawable.ic_hand_00);
-            lstFrames.add(R.drawable.ic_hand_01);
-            lstFrames.add(R.drawable.ic_hand_02);
-            lstFrames.add(R.drawable.ic_hand_03);
-            lstFrames.add(R.drawable.ic_hand_04);
-            lstFrames.add(R.drawable.ic_hand_05);
-            lstFrames.add(R.drawable.ic_hand_06);
-            lstFrames.add(R.drawable.ic_hand_07);
-
-            Runnable task = () -> animationTask(lstFrames);
-            Thread thread = new Thread(task);
-            thread.start();
-        }
+        Runnable task = () -> animationTask(mAnimationFramesList);
+        Thread thread = new Thread(task);
+        thread.start();
     }
 
     private void animationTask(List<Integer> lstFrames) {
         DebugLogger.d(null);
 
-        try {
+/*        try {
             Thread.sleep(1500);
         } catch (InterruptedException ex) {}
+*/
 
-
-        for (int i = 0; i < lstFrames.size() - 1; i++) {
+        int i = 0;
+        while (mRunAnimation.get()) {
             Drawable dr1 = getResources().getDrawable(lstFrames.get(i), null);
             runOnUiThread(() -> {
                 mHandImageView1.setImageDrawable(dr1);
                 mHandImageView1.setImageAlpha(0);
             });
 
-
-            Drawable dr0 = getResources().getDrawable(lstFrames.get(i + 1), null);
+            int iNext = (i + 1) % lstFrames.size();
+            Drawable dr0 = getResources().getDrawable(lstFrames.get(iNext), null);
             runOnUiThread(() -> {
                 mHandImageView0.setImageDrawable(dr0);
                 mHandImageView0.setImageAlpha(255);
@@ -113,7 +125,7 @@ public class EditImageActivity extends BasicBanneredActivity {
 
 
             try {
-                Thread.sleep(250);
+                Thread.sleep(300);
             } catch (InterruptedException ex) {}
 
 
@@ -123,10 +135,12 @@ public class EditImageActivity extends BasicBanneredActivity {
                     mHandImageView0.setImageAlpha(255 - (iFrame + 1) * 32);
 
                     try {
-                        Thread.sleep(50);
+                        Thread.sleep(30);
                     } catch (InterruptedException ex) {}
                 }
             });
+
+            i = ++i % lstFrames.size();
         }
     }
 }
