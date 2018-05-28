@@ -87,7 +87,6 @@ public class WelcomeActivity extends AppCompatActivity {
 
         switch (requestCode) {
             case PERMISSIONS_REQUEST: {
-                List lstGranted = new ArrayList<>();
 
                 boolean isAllPermissionsGranted = true;
                 for (int i = 0; i < grantResults.length; i++) {

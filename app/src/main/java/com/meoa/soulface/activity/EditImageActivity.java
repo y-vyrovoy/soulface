@@ -74,11 +74,14 @@ public class EditImageActivity extends BasicBanneredActivity {
             mAnimateIcon = false;
 
             List<Integer> lstFrames = new ArrayList<>();
-            lstFrames.add(R.drawable.ic_hand_0);
-            lstFrames.add(R.drawable.ic_hand_1);
-            lstFrames.add(R.drawable.ic_hand_0);
-            lstFrames.add(R.drawable.ic_hand_2);
-            lstFrames.add(R.drawable.ic_hand_0);
+            lstFrames.add(R.drawable.ic_hand_00);
+            lstFrames.add(R.drawable.ic_hand_01);
+            lstFrames.add(R.drawable.ic_hand_02);
+            lstFrames.add(R.drawable.ic_hand_03);
+            lstFrames.add(R.drawable.ic_hand_04);
+            lstFrames.add(R.drawable.ic_hand_05);
+            lstFrames.add(R.drawable.ic_hand_06);
+            lstFrames.add(R.drawable.ic_hand_07);
 
             Runnable task = () -> animationTask(lstFrames);
             Thread thread = new Thread(task);
@@ -92,6 +95,7 @@ public class EditImageActivity extends BasicBanneredActivity {
         try {
             Thread.sleep(1500);
         } catch (InterruptedException ex) {}
+
 
         for (int i = 0; i < lstFrames.size() - 1; i++) {
             Drawable dr1 = getResources().getDrawable(lstFrames.get(i), null);
