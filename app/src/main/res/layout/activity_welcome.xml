@@ -8,10 +8,6 @@
     android:gravity="center_horizontal"
     android:background="@android:color/black">
 
-    <!--
-        Logo bottom divides screen as 40 / 60
-        Logo width = 85% of screen
-    -->
 
     <LinearLayout
         android:layout_width="match_parent"
