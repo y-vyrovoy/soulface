@@ -42,6 +42,8 @@ public class PhotoSelectionActivity extends BasicBanneredActivity {
     private FullScreenAd mFullScreenAd;
     private boolean mShowProgressBar;
 
+    private boolean mShowWrongImage;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         DebugLogger.d(null);
@@ -61,6 +63,7 @@ public class PhotoSelectionActivity extends BasicBanneredActivity {
 
         mIsFirstShow = true;
         mShowProgressBar = false;
+        mShowWrongImage = false;
     }
 
     @Override
@@ -73,6 +76,7 @@ public class PhotoSelectionActivity extends BasicBanneredActivity {
             mAlpha1 = 0x00;
 
             setProgressBarState(false);
+            mShowWrongImage = false;
 
             mImageAnimation.setImageResource(R.drawable.face_anim_0);
             mImageAnimation.setImageAlpha(mAlpha0);
@@ -83,7 +87,14 @@ public class PhotoSelectionActivity extends BasicBanneredActivity {
             th.start();
         } else {
             mImageAnimation.setVisibility(View.INVISIBLE);
-            mImageMain.setImageResource(R.drawable.face_anim_1);
+
+            if (!mShowWrongImage) {
+                mImageMain.setImageResource(R.drawable.face_anim_1);
+            } else {
+                mImageMain.setImageResource(R.drawable.image_load_error);
+                setProgressBarState(false);
+            }
+
         }
 
         mIsFirstShow = false;
@@ -98,6 +109,7 @@ public class PhotoSelectionActivity extends BasicBanneredActivity {
     }
 
     private Uri _imageUri;
+
     public void onBtnShootPhoto(View v) {
         DebugLogger.d(null);
 
@@ -135,6 +147,7 @@ public class PhotoSelectionActivity extends BasicBanneredActivity {
                 if(bmp != null) {
                     SoulFaceApp.setBitmapToEdit(bmp);
                     setBitmapAndWait(bmp);
+                    mShowWrongImage = false;
                 }
             } else if(requestCode == RESULT_CAMERA_IMAGE) {
                 try {
@@ -158,8 +171,7 @@ public class PhotoSelectionActivity extends BasicBanneredActivity {
                 Thread thread = new Thread(task);
                 thread.start();
             } else {
-                mImageMain.setImageResource(R.drawable.image_load_error);
-                setProgressBarState(false);
+                mShowWrongImage = true;
             }
         }
     }

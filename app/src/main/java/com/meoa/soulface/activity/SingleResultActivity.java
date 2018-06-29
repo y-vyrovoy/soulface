@@ -65,7 +65,7 @@ public class SingleResultActivity extends BasicBanneredActivity {
                     mImageSaved.setVisibility(View.VISIBLE);
                     mHandler.postDelayed(() -> mImageSaved.setVisibility(View.INVISIBLE), 1000);
                 },
-                null);
+                null, true);
     }
 
     public void onBtnBack(View v) {
@@ -79,7 +79,7 @@ public class SingleResultActivity extends BasicBanneredActivity {
 
         mProgressBar.setVisibility(View.VISIBLE);
         Bitmap bmpVrModeImage = SoulFaceApp.getSingleResultBitmap();
-        BitmapUtils.saveBitmapGallery(bmpVrModeImage, this);
+        BitmapUtils.saveBitmapGallery(bmpVrModeImage, this, true);
         mProgressBar.setVisibility(View.INVISIBLE);
         v.setVisibility(View.INVISIBLE);
         mImageSaved.setVisibility(View.VISIBLE);

@@ -14,6 +14,7 @@ import android.widget.ProgressBar;
 
 import com.meoa.soulface.DebugLogger;
 import com.meoa.soulface.R;
+import com.meoa.soulface.SoulFaceApp;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +22,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class WelcomeActivity extends AppCompatActivity {
 
-    private static final int PERMISSIONS_REQUEST = 1;
+    private static final int PERMISSIONS_REQUEST = 777;
 
     private AtomicBoolean mWaitForPermissions = new AtomicBoolean();
     private AtomicBoolean mIsPermissionsGranted = new AtomicBoolean();
@@ -54,6 +55,12 @@ public class WelcomeActivity extends AppCompatActivity {
         lstPermissions.add(Manifest.permission.ACCESS_NETWORK_STATE);
 
         fillPermissionsRequest(lstPermissions);
+
+        if (SoulFaceApp.isTablet(this)){
+            DebugLogger.d("This is tablet");
+        } else {
+            DebugLogger.d("This is smartphone");
+        }
     }
 
     private void fillPermissionsRequest(List<String> lstPermissions) {
@@ -81,8 +88,7 @@ public class WelcomeActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         DebugLogger.d(null);
 
         switch (requestCode) {
@@ -118,7 +124,7 @@ public class WelcomeActivity extends AppCompatActivity {
             }
 
             if( mIsPermissionsGranted.get() == true ) {
-                startActivity(new Intent(WelcomeActivity.this, PhotoSelectionActivity.class));
+                startActivity(new Intent(WelcomeActivity.this, IntroActivity.class));
                 finish();
             }
         }, 3000);

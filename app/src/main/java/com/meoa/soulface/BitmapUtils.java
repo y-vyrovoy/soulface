@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.BitmapShader;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
@@ -125,6 +126,22 @@ public class BitmapUtils {
             canvasResult.drawBitmap(bmpCaptionRight, nCaptionRightLeft, nCaptionTop, null);
         }
 
+
+        // ----------------------------------
+        // Adding watermark
+
+//        Bitmap bmpWatermark = BitmapFactory.decodeResource(SoulFaceApp.getInstance().getResources(), R.drawable.ic_watermark);
+//
+//        double dblRatio = (nNewBitmapWidth * 0.11) / bmpWatermark.getWidth();
+//        bmpWatermark.reconfigure((int)(nNewBitmapWidth * 0.11),
+//                                    (int)(bmpWatermark.getHeight() * dblRatio),
+//                                    bmpWatermark.getConfig());
+//
+//        canvasResult.drawBitmap(bmpWatermark,
+//                                bmpCanvas.getWidth() - bmpWatermark.getWidth(),
+//                                bmpCanvas.getHeight() - bmpWatermark.getHeight(),
+//                                null);
+
         return bmpCanvas;
     }
 
@@ -147,9 +164,43 @@ public class BitmapUtils {
         return bmpResult;
     }
 
+    public static Bitmap addWatermark(Bitmap bmpSource) {
+
+        int nBitmapWidth = bmpSource.getWidth();
+        int nBitmapHeight = bmpSource.getHeight();
+
+        Bitmap bmpResult = Bitmap.createBitmap(nBitmapWidth, nBitmapHeight, bmpSource.getConfig());
+        Canvas canvasResult = new Canvas(bmpResult);
+
+        canvasResult.drawBitmap(bmpSource, 0,0, null);
+
+        Bitmap bmpWatermarkSource = BitmapFactory.decodeResource(SoulFaceApp.getInstance().getResources(), R.drawable.ic_watermark);
+
+        double dblRatio = (nBitmapHeight * 0.08) / bmpWatermarkSource.getHeight();
+
+        Bitmap bmpWatermark = Bitmap.createScaledBitmap(bmpWatermarkSource,
+                                                        (int)(bmpWatermarkSource.getWidth() * dblRatio),
+                                                        (int)(nBitmapHeight * 0.08), true);
+
+        canvasResult.drawBitmap(bmpWatermark,
+                            bmpResult.getWidth() - bmpWatermark.getWidth() - 2,
+                            bmpResult.getHeight() - bmpWatermark.getHeight() - 2,
+                            null);
+
+        return bmpResult;
+    }
+
     @Nullable
-    public static String saveBitmapToAppFolder(Bitmap bmp, Context context) {
+    public static String saveBitmapToAppFolder(Bitmap bmpSource, Context context, boolean bAddWatermark) {
         DebugLogger.d(null);
+
+        Bitmap bmpToSave;
+
+        if (bAddWatermark) {
+            bmpToSave = BitmapUtils.addWatermark(bmpSource);
+        } else {
+            bmpToSave = bmpSource;
+        }
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss_SSS");
         String fileName = sdf.format(new Date(System.currentTimeMillis()));
@@ -158,7 +209,7 @@ public class BitmapUtils {
         FileOutputStream out = null;
         try {
             out = new FileOutputStream(fNew);
-            bmp.compress(Bitmap.CompressFormat.PNG, 100, out); // bmp is your Bitmap instance
+            bmpToSave.compress(Bitmap.CompressFormat.PNG, 100, out); // bmp is your Bitmap instance
             // PNG is a lossless format, the compression factor (100) is ignored
             out.close();
         } catch (Exception ex) {
@@ -190,21 +241,38 @@ public class BitmapUtils {
     }
 
     @Nullable
-    public static String saveBitmapGallery(Bitmap bmp, Context context) {
+    public static String saveBitmapGallery(Bitmap bmpSource, Context context, boolean bAddWatermark) {
         DebugLogger.d(null);
 
-        String sImageUrl = MediaStore.Images.Media.insertImage(context.getContentResolver(), bmp, "title" , "description");
+        Bitmap bmpToSave;
+
+        if (bAddWatermark) {
+            bmpToSave = BitmapUtils.addWatermark(bmpSource);
+        } else {
+            bmpToSave = bmpSource;
+        }
+
+        String sImageUrl = MediaStore.Images.Media.insertImage(context.getContentResolver(), bmpToSave, "title" , "description");
         Uri savedImageURI = Uri.parse(sImageUrl);
         String sPath = getRealPathFromURI(context, savedImageURI);
         return sPath;
     }
 
-    public static void shareImage(Bitmap bmp, Context context,
+    public static void shareImage(Bitmap bmpSource, Context context,
                                     OnActionDoneCallback callbackOnSave,
-                                    OnActionDoneCallback callbackOnShare) {
+                                    OnActionDoneCallback callbackOnShare,
+                                    boolean bAddWatermark) {
         DebugLogger.d(null);
 
-        String sImageUrl = MediaStore.Images.Media.insertImage(context.getContentResolver(), bmp, "title" , "description");
+        Bitmap bmpToSave;
+
+        if (bAddWatermark) {
+            bmpToSave = BitmapUtils.addWatermark(bmpSource);
+        } else {
+            bmpToSave = bmpSource;
+        }
+
+        String sImageUrl = MediaStore.Images.Media.insertImage(context.getContentResolver(), bmpToSave, "title" , "description");
         Uri savedImageURI = Uri.parse(sImageUrl);
         if (callbackOnSave != null) {
             callbackOnSave.doAction();

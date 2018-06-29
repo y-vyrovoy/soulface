@@ -1,10 +1,12 @@
-package com.example.testviewpager;
+package com.meoa.soulface.activity;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.meoa.soulface.DebugLogger;
 
 public class IntroFragment extends Fragment {
 

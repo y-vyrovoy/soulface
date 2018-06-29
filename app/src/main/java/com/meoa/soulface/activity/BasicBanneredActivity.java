@@ -13,8 +13,8 @@ import com.google.android.gms.ads.MobileAds;
 
 public class BasicBanneredActivity extends AppCompatActivity {
 
-    private static final String APP_AD_ID = "ca-app-pub-3940256099942544~3347511713";
-    private static final String BANNER_AD_ID = "ca-app-pub-3940256099942544/6300978111";
+    private static final String APP_AD_ID = "ca-app-pub-1326681883635780~8877364276"; // Test id "ca-app-pub-3940256099942544~3347511713";
+    private static final String BANNER_AD_ID = "ca-app-pub-1326681883635780/1079846870"; // Test id"ca-app-pub-3940256099942544/6300978111";
 
     private String mAdAppId;
     private String mAdBannerId;

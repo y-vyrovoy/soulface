@@ -24,6 +24,8 @@ public class EditImageActivity extends BasicBanneredActivity {
     private ImageView mHandImageView0;
     private ImageView mHandImageView1;
 
+    private int mAnimationFrame;
+
     List<Integer> mAnimationFramesList = new ArrayList<>();
     private AtomicBoolean mRunAnimation = new AtomicBoolean();
 
@@ -103,11 +105,6 @@ public class EditImageActivity extends BasicBanneredActivity {
     private void animationTask(List<Integer> lstFrames) {
         DebugLogger.d(null);
 
-/*        try {
-            Thread.sleep(1500);
-        } catch (InterruptedException ex) {}
-*/
-
         int i = 0;
         while (mRunAnimation.get()) {
             Drawable dr1 = getResources().getDrawable(lstFrames.get(i), null);
@@ -128,17 +125,12 @@ public class EditImageActivity extends BasicBanneredActivity {
                 Thread.sleep(300);
             } catch (InterruptedException ex) {}
 
-
-            runOnUiThread(() -> {
-                for (int iFrame = 1; iFrame < 8; iFrame++) {
-                    mHandImageView1.setImageAlpha((iFrame + 1) * 32);
-                    mHandImageView0.setImageAlpha(255 - (iFrame + 1) * 32);
-
-                    try {
-                        Thread.sleep(30);
-                    } catch (InterruptedException ex) {}
-                }
-            });
+            for (mAnimationFrame = 1; mAnimationFrame < 8; mAnimationFrame++) {
+                runOnUiThread(() -> {
+                    mHandImageView1.setImageAlpha((mAnimationFrame + 1) * 32);
+                    mHandImageView0.setImageAlpha(255 - (mAnimationFrame + 1) * 32);
+                });
+            };
 
             i = ++i % lstFrames.size();
         }

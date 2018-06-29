@@ -2,11 +2,14 @@ package com.meoa.soulface;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Environment;
+import android.telephony.TelephonyManager;
+import android.util.DisplayMetrics;
 
 import com.meoa.soulface.R;
 
@@ -30,6 +33,7 @@ public class SoulFaceApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        DebugLogger.i(null);
         mInstance = this;
 
         mFullScreenAd = new FullScreenAd(this);
@@ -39,7 +43,7 @@ public class SoulFaceApp extends Application {
     }
 
     public static SoulFaceApp getInstance() {
-        DebugLogger.d(null);
+        DebugLogger.i(null);
         return mInstance;
     }
 
@@ -154,5 +158,15 @@ public class SoulFaceApp extends Application {
                 = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
+    public static Boolean isTablet(Context context) {
+
+        if ((context.getResources().getConfiguration().screenLayout &
+                Configuration.SCREENLAYOUT_SIZE_MASK) >= Configuration.SCREENLAYOUT_SIZE_LARGE) {
+
+            return true;
+        }
+        return false;
     }
 }

@@ -1,6 +1,7 @@
 package com.meoa.soulface.activity;
 
 
+import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
@@ -19,7 +20,6 @@ public class VrModeActivity extends BasicBanneredActivity {
 
     private Handler mHandler = new Handler();
 
-    private ImageView mImageGeneral;
     private ProgressBar mProgressBar;
     private ImageView mImageSaved;
 
@@ -32,14 +32,14 @@ public class VrModeActivity extends BasicBanneredActivity {
 
         InitializeBanner();
 
-        mImageGeneral = findViewById(R.id.image_general);
+        ImageView imageGeneral = findViewById(R.id.image_general);
         mProgressBar = findViewById(R.id.progress_bar);
         mImageSaved = findViewById(R.id.image_saved);
 
         Bitmap bmpVrModeImage = SoulFaceApp.getVrModeBitmap(true);
 
-        if (mImageGeneral != null && bmpVrModeImage != null) {
-            mImageGeneral.setImageBitmap(bmpVrModeImage);
+        if (imageGeneral != null && bmpVrModeImage != null) {
+            imageGeneral.setImageBitmap(bmpVrModeImage);
         } else {
             Log.e(TAG, "Can't find left ImageView");
         }
@@ -50,11 +50,16 @@ public class VrModeActivity extends BasicBanneredActivity {
         DebugLogger.d(null);
 
         super.onStart();
+
+        if (SoulFaceApp.isTablet(this) == false) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        }
+
         mProgressBar.setVisibility(View.INVISIBLE);
         mImageSaved.setVisibility(View.INVISIBLE);
     }
 
-    public void onBtnShare(View v) {
+    public void onBtnShare(View viewShareButton) {
         DebugLogger.d(null);
 
         mProgressBar.setVisibility(View.VISIBLE);
@@ -66,7 +71,8 @@ public class VrModeActivity extends BasicBanneredActivity {
                     mImageSaved.setVisibility(View.VISIBLE);
                     mHandler.postDelayed(() -> mImageSaved.setVisibility(View.INVISIBLE), 1000);
                 },
-                null);
+                null, true);
+        viewShareButton.setVisibility(View.INVISIBLE);
     }
 
     public void onBtnBack(View v) {
@@ -74,14 +80,14 @@ public class VrModeActivity extends BasicBanneredActivity {
         onBackPressed();
     }
 
-    public void onBtnSave(View v) {
+    public void onBtnSave(View viewSaveButton) {
         DebugLogger.d(null);
 
         mProgressBar.setVisibility(View.VISIBLE);
         Bitmap bmpVrModeImage = SoulFaceApp.getVrModeBitmap(false);
-        BitmapUtils.saveBitmapGallery(bmpVrModeImage, this);
+        BitmapUtils.saveBitmapGallery(bmpVrModeImage, this, true);
         mProgressBar.setVisibility(View.INVISIBLE);
-        v.setVisibility(View.INVISIBLE);
+        viewSaveButton.setVisibility(View.INVISIBLE);
         mImageSaved.setVisibility(View.VISIBLE);
         mHandler.postDelayed(() -> mImageSaved.setVisibility(View.INVISIBLE), 1000);
     }

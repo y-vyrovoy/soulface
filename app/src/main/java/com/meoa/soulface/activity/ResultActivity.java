@@ -2,6 +2,7 @@ package com.meoa.soulface.activity;
 
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
@@ -20,7 +21,6 @@ import com.meoa.soulface.FullScreenAd;
 import com.meoa.soulface.SoulFaceApp;
 import com.meoa.soulface.R;
 
-import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ResultActivity extends BasicBanneredActivity {
@@ -34,6 +34,8 @@ public class ResultActivity extends BasicBanneredActivity {
     private View mLeftViewBottom;
     private View mRightViewTop;
     private View mRightViewBottom;
+    private View mleftViewTab;
+    private View mRightViewTab;
     private ProgressBar mProgressBar;
     private ImageView mImageSaved;
     private FullScreenAd mFullScreenAd;
@@ -52,7 +54,11 @@ public class ResultActivity extends BasicBanneredActivity {
         DebugLogger.d(null);
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_result);
+        if (SoulFaceApp.isTablet(this) == false) {
+            setContentView(R.layout.activity_result);
+        } else {
+            setContentView(R.layout.activity_result_tab);
+        }
 
         InitializeBanner();
 
@@ -74,6 +80,7 @@ public class ResultActivity extends BasicBanneredActivity {
         mRightViewBottom = layoutInflater.inflate(R.layout.layout_right_photo_bottom, null);
         setSizedDrawable (mRightViewBottom, BitmapUtils.getRoundedCornerBitmap( SoulFaceApp.getBitmapRight(), ROUND_RADIUS, true, false, this ));
 
+
         mProgressBar = findViewById(R.id.progressBar);
         mImageSaved = findViewById(R.id.image_saved);
 
@@ -85,6 +92,22 @@ public class ResultActivity extends BasicBanneredActivity {
         DebugLogger.d(null);
 
         super.onStart();
+
+        if (SoulFaceApp.isTablet(this) == false) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        } else {
+            ImageView imageLeft = findViewById(R.id.layout_left).findViewById(R.id.photo);
+            setSizedDrawable (imageLeft, BitmapUtils.getRoundedCornerBitmap( SoulFaceApp.getBitmapLeft(), ROUND_RADIUS, true, true, this ));
+
+            ImageView imageRight = findViewById(R.id.layout_right).findViewById(R.id.photo);
+            setSizedDrawable (imageRight, BitmapUtils.getRoundedCornerBitmap( SoulFaceApp.getBitmapRight(), ROUND_RADIUS, true, true, this ));
+
+            mLayoutButtons0 = findViewById(R.id.layout_buttons_right_0);
+            mLayoutButtons1 = findViewById(R.id.layout_buttons_right_1);
+
+            mLayoutButtons0.setVisibility(View.VISIBLE);
+            mLayoutButtons1.setVisibility(View.INVISIBLE);
+        }
 
         doLayout(true);
         mProgressBar.setVisibility(View.INVISIBLE);
@@ -102,6 +125,10 @@ public class ResultActivity extends BasicBanneredActivity {
     private void doLayout(boolean leftOnTop){
         DebugLogger.d(null);
 
+        if (SoulFaceApp.isTablet(this) == true) {
+            return;
+        }
+
         if (mLeftOnTop == leftOnTop) {
             return;
         }
@@ -112,21 +139,26 @@ public class ResultActivity extends BasicBanneredActivity {
             Log.e(TAG, "Can't find root layout. doLayout() terminated");
             return;
         }
+
         layoutRoot.removeAllViews();
 
         if (leftOnTop) {
+
             layoutRoot.addView(mRightViewBottom);
             layoutRoot.addView(mLeftViewTop);
 
             mLayoutButtons0 = mRightViewBottom.findViewById(R.id.layout_buttons_right_0);
             mLayoutButtons1 = mRightViewBottom.findViewById(R.id.layout_buttons_right_1);
+
         } else {
+
             layoutRoot.addView(mLeftViewBottom);
             layoutRoot.addView(mRightViewTop);
 
             mLayoutButtons0 = mRightViewTop.findViewById(R.id.layout_buttons_right_0);
             mLayoutButtons1 = mRightViewTop.findViewById(R.id.layout_buttons_right_1);
         }
+
 
         mLayoutButtons0.setVisibility(View.VISIBLE);
         mLayoutButtons1.setVisibility(View.INVISIBLE);
@@ -165,7 +197,7 @@ public class ResultActivity extends BasicBanneredActivity {
 
         if (bmpToSave != null) {
             mProgressBar.setVisibility(View.VISIBLE);
-            BitmapUtils.saveBitmapGallery(bmpToSave, this);
+            BitmapUtils.saveBitmapGallery(bmpToSave, this, true);
             mProgressBar.setVisibility(View.INVISIBLE);
             v.setVisibility(View.INVISIBLE);
 
@@ -193,7 +225,7 @@ public class ResultActivity extends BasicBanneredActivity {
                                         mImageSaved.setVisibility(View.VISIBLE);
                                         mHandler.postDelayed(() -> mImageSaved.setVisibility(View.INVISIBLE), 1000);
                                     },
-                                    null);
+                                    null, true);
         }
     }
 

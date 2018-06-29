@@ -10,10 +10,13 @@ import com.google.android.gms.ads.MobileAds;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class FullScreenAd{
+public class FullScreenAd {
 
-    private static final String APP_AD_ID = "ca-app-pub-3940256099942544~3347511713";
-    private static final String SCREEN_AD_ID = "ca-app-pub-3940256099942544/1033173712";
+    static int mCounter = 0;
+    int mID;
+
+    private static final String APP_AD_ID = "ca-app-pub-1326681883635780~8877364276"; // Test id "ca-app-pub-3940256099942544~3347511713";
+    private static final String SCREEN_AD_ID = "ca-app-pub-1326681883635780/4552188021"; // Test id"ca-app-pub-3940256099942544/6300978111";
 
     private long LOAD_AD_TIMEOUT = 10_000;
 
@@ -30,24 +33,28 @@ public class FullScreenAd{
 
     public FullScreenAd(Context context) {
         super();
-        DebugLogger.d(null);
+        DebugLogger.i(null);
 
         mContext = context;
 
         if (SoulFaceApp.getInstance().isNetworkAvailable()) {
             initAdIDs(null, null);
         }
+
+        mID = mCounter++;
     }
 
     public FullScreenAd(Context context, String adAppId, String adScreenId) {
         super();
-        DebugLogger.d(null);
+        DebugLogger.i(null);
 
         mContext = context;
 
         if (SoulFaceApp.getInstance().isNetworkAvailable()) {
             initAdIDs(adAppId, adScreenId);
         }
+
+        mID = mCounter++;
     }
 
     public FullScreenAd(Context context, int adAppId, int adBannerId) {
@@ -59,6 +66,8 @@ public class FullScreenAd{
         if (SoulFaceApp.getInstance().isNetworkAvailable()) {
             initAdIDs(context.getResources().getString(adAppId), context.getResources().getString(adBannerId));
         }
+
+        mID = mCounter++;
     }
 
 
@@ -92,12 +101,13 @@ public class FullScreenAd{
     }
 
     public void loadAd() {
-        DebugLogger.d(null);
+        DebugLogger.i(null);
 
         if (SoulFaceApp.getInstance().isNetworkAvailable() == false) {
-            DebugLogger.d("No internet connection");
+            DebugLogger.i("No internet connection");
             return;
         }
+
 
         // Initialize the Mobile Ads SDK.
         MobileAds.initialize(mContext, mAdAppId);
@@ -112,7 +122,7 @@ public class FullScreenAd{
     }
 
     private void setInterstitialAdListener() {
-        DebugLogger.d(null);
+        DebugLogger.i(null);
 
 //        if (SoulFaceApp.getInstance().isNetworkAvailable() == false) {
 //            DebugLogger.d("No internet connection");
@@ -122,9 +132,9 @@ public class FullScreenAd{
         mInterstitialAd.setAdListener(new AdListener() {
             @Override
             public void onAdLoaded() {
-                DebugLogger.d(null);
+                DebugLogger.i(null);
 
-                DebugLogger.d(String.format("Ad loaded in %d ms", System.currentTimeMillis() - mLoadStart));
+                DebugLogger.i(String.format("Ad loaded in %d ms", System.currentTimeMillis() - mLoadStart));
 
                 mAdIsLoaded.set(true);
                 if (mOnAdLoadedAction != null) {
@@ -159,14 +169,14 @@ public class FullScreenAd{
     }
 
    public void showAd(OnAdClosedAction action) {
-        DebugLogger.d(null);
-        DebugLogger.d("Ad is loaded: " + mAdIsLoaded.get());
+        DebugLogger.i(null);
+        DebugLogger.i("Ad is loaded: " + mAdIsLoaded.get());
 
-       if (SoulFaceApp.getInstance().isNetworkAvailable() == false) {
+        if (SoulFaceApp.getInstance().isNetworkAvailable() == false) {
            DebugLogger.d("No internet connection. Starting onAdClosedAction immediately");
            action.onAdCloseAction();
            return;
-       }
+        }
 
         mOnAdCloseAction = action;
         boolean bShow = false;
