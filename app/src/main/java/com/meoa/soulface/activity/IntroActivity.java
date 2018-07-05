@@ -82,7 +82,7 @@ public class IntroActivity extends FragmentActivity {
         if (mCurrentPage == 0) {
             mBtnBack.setVisibility(View.INVISIBLE);
         }
-        mViewPager.setCurrentItem(mCurrentPage);
+        setPage(mCurrentPage);
     }
 
     public void onBtnBack(View v) {
